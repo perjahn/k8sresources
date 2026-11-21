@@ -1,0 +1,11 @@
+body { font: 14px system-ui, sans-serif; margin: 2rem; color: #202124; }
+.table-wrap { overflow-x: auto; }
+.resource-selector { margin-bottom: 1rem; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #d5d9de; text-align: center; }
+thead th { background: #f3f5f7; position: sticky; top: 0; }
+.different { background-color: #fff8cc; }
+th:first-child { text-align: left; }
+.present { color: #18794e; font-weight: 700; }
+.missing { color: #a1a1aa; }
+.error { color: #b42318; font-size: .85rem; font-weight: 400; max-width: 20rem; overflow-wrap: anywhere; }

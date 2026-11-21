@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kubernetes resources</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <h1>Kubernetes resources</h1>
+  <form method="get" action="/" class="resource-selector">
+    <label for="resource-kind">Resource kind</label>
+    <select id="resource-kind" name="kind">
+      {{range .ResourceKinds}}<option value="{{.Key}}"{{if eq .Key $.SelectedResource}} selected{{end}}>{{.Label}}</option>{{end}}
+    </select>
+    <button type="submit">Show</button>
+    <label><input id="hide-empty" name="hide_empty" value="1" type="checkbox"{{if $.HideEmpty}} checked{{end}}> hide empty</label>
+  </form>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Namespace</th>{{range $index, $cluster := .Clusters}}<th><label><input type="checkbox" class="include-in-diff"{{if index $.SelectedClusters $index}} checked{{end}} data-cluster-index="{{$index}}" data-cluster-name="{{$cluster.Name}}" aria-label="Include {{$cluster.Name}} in yellow diff calculation"> {{$cluster.Name}}</label>{{if $cluster.Err}}<div class="error">{{$cluster.Err}}</div>{{end}}</th>{{end}}</tr></thead>
+    <tbody>
+      {{range $.Namespaces}}{{$namespace := .}}<tr data-diff-row{{if hasDifference $namespace $.Clusters $.SelectedClusters}} class="different"{{end}}><th>{{$namespace}}</th>{{range $index, $cluster := $.Clusters}}<td data-cluster-index="{{$index}}" data-state="{{if $cluster.Err}}unavailable{{else if contains $cluster.Namespaces $namespace}}present{{else}}missing{{end}}" title="{{clusterTooltip $cluster $namespace $.SelectedResource}}">{{if $cluster.Err}}<span class="error">Unavailable</span>{{else if contains $cluster.Namespaces $namespace}}{{index $cluster.ResourceCounts $namespace}}{{else}}<span class="missing" aria-label="absent">&mdash;</span>{{end}}</td>{{end}}</tr>{{else}}<tr><td colspan="{{add (len .Clusters) 1}}">No namespaces found.</td></tr>{{end}}
+    </tbody>
+  </table>
+  </div>
+</body>
+</html>
